@@ -17,7 +17,14 @@ MonoBehaviour:
   cardAttack: 11
   cardHp: 11
   cardMesh: {fileID: 0}
-  cardMaterial: {fileID: 0}
-  playEffectPrefab: {fileID: 0}
-  deathEffectPrefab: {fileID: 0}
+  cardMaterial: {fileID: 2100000, guid: dfe721b35fd34ae45b4399c1ab645701, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: 481a6b71eea36df42b7c8f553591c53d, type: 2}
+  playEffectPrefab: {fileID: 8042673669633530665, guid: 94532604b3dbc714a97f77ff8342ddd0, type: 3}
+  deathEffectPrefab: {fileID: 7403549602638291597, guid: c44f1aebac4b6984f86a7bec9bb65707, type: 3}
   abilityEffectPrefab: {fileID: 0}
+  damageEffectPrefab: {fileID: 5922396007134840578, guid: 8e5d503abf6aa2240930da6294bf56f1, type: 3}
+  selectEffectPrefab: {fileID: 0}
+  playSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  abilitySound: {fileID: 0}
+  damageSound: {fileID: 0}

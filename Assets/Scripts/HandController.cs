@@ -81,12 +81,14 @@ public class HandController : MonoBehaviour
 
         SelectedCard = card;
         selectedOriginalPos = card.transform.localPosition;
+        SelectedCard.Highlight(true);
         StartCoroutine(AnimateToPosition(card, card.transform.localPosition + Vector3.up * selectLift, card.transform.localRotation));
     }
 
     public void DeselectCard()
     {
         if (!SelectedCard) return;
+        SelectedCard.Highlight(false);
         StartCoroutine(AnimateToPosition(SelectedCard, selectedOriginalPos, SelectedCard.transform.localRotation));
         SelectedCard = null;
     }
@@ -111,12 +113,14 @@ public class HandController : MonoBehaviour
         if (placed)
         {
             GameController.Instance.SpendEnergy(cardToPlay.Data.cardCost);
+            cardToPlay.Highlight(false);
             UpdateLayout(); // Перестраиваем оставшиеся карты
             return true;
         }
 
         // Если слот занят - возвращаем  в руку
         cardsInHand.Add(cardToPlay);
+        cardToPlay.Highlight(false);
         UpdateLayout();
         Debug.Log($"[Hand] Slot {slotIndex} is occupied or invalid. Card returned.");
         return false;
