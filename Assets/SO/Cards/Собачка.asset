@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "\u0421\u043E\u0431\u0430\u0447\u043A\u0430"
   m_EditorClassIdentifier: Assembly-CSharp::CardsDataSO
   cardName: "\u0421\u043E\u0431\u0430\u0447\u043A\u0430"
-  cardCost: 0
-  cardAttack: 22
-  cardHp: 22
+  cardCost: 3
+  cardAttack: 4
+  cardHp: 5
+  property: 1
+  summonOnDeathData: {fileID: 0}
+  turnsToGrow: 1
   cardMesh: {fileID: 0}
-  cardMaterial: {fileID: 2100000, guid: dfe721b35fd34ae45b4399c1ab645701, type: 2}
-  selectedMaterial: {fileID: 2100000, guid: 481a6b71eea36df42b7c8f553591c53d, type: 2}
+  cardMaterial: {fileID: 2100000, guid: 044f1449a18a3ef4ca29c6a41fb24019, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: 4366013d008295244928da7c847ba69c, type: 2}
   playEffectPrefab: {fileID: 8042673669633530665, guid: 94532604b3dbc714a97f77ff8342ddd0, type: 3}
   deathEffectPrefab: {fileID: 7403549602638291597, guid: c44f1aebac4b6984f86a7bec9bb65707, type: 3}
   abilityEffectPrefab: {fileID: 0}

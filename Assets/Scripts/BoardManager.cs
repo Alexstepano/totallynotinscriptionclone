@@ -93,4 +93,38 @@ public class BoardManager : MonoBehaviour
         return -1;
     }
 
+
+
+    public CardController SummonCardInSlot(CardsDataSO data, int slotIndex, bool isPlayerSide)
+    {
+        var slots = isPlayerSide ? playerSlots : enemySlots;
+        if (slotIndex < 0 || slotIndex >= slots.Count) return null;
+
+        var targetSlot = slots[slotIndex];
+        if (targetSlot == null || targetSlot.IsOccupied) return null;
+
+
+        if (HandController.Instance == null || HandController.Instance.cardPrefab == null) return null;
+
+        GameObject go = Instantiate(HandController.Instance.cardPrefab, Vector3.zero, Quaternion.identity);
+        CardController newCard = go.GetComponent<CardController>();
+        if (!newCard)
+        {
+            Destroy(go);
+            Debug.Log($"[Summon]Error: {data.cardName}  HAVE NOT summoned in slot {slotIndex}");
+            return null;
+        }
+
+        newCard.Initialize(data);
+
+
+        newCard.MoveToSlot(targetSlot);
+        targetSlot.currentCard = newCard;
+
+        Debug.Log($"[Summon] {data.cardName} summoned in slot {slotIndex}");
+        return newCard;
+    }
+
+
+    public bool IsPlayerSlot(CardSlot slot) => playerSlots.Contains(slot);
 }

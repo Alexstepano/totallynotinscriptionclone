@@ -5,6 +5,7 @@ using TMPro;
 [RequireComponent(typeof(BoxCollider))]
 public class CardController : MonoBehaviour
 {
+    private int turnsOnBoard = 0;
     public CardsDataSO Data { get; private set; }
     public int CurrentHP { get; private set; }
     public bool IsInHand { get; private set; }
@@ -87,6 +88,19 @@ public class CardController : MonoBehaviour
     {
         SpawnEffect(Data.deathEffectPrefab);
         PlaySound(Data.deathSound);
+
+
+
+        if (Data.property == CardProperty.SummonOnDeath && Data.summonOnDeathData != null)
+        {
+
+            if (CurrentSlot != null)
+            {
+                CurrentSlot.currentCard = null;
+            }
+            TriggerSummon();
+        }
+
         CurrentSlot?.OnCardDied(this);
         Destroy(gameObject, 0.5f);
     }
@@ -108,7 +122,7 @@ public class CardController : MonoBehaviour
         PlaySound(Data.damageSound);
 
 
-        if (amount >= 3 && _cameraShake != null)
+        if (amount >= 4 && _cameraShake != null)
             _cameraShake.Shake(0.15f, 0.3f);
 
 
@@ -143,4 +157,64 @@ public class CardController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _mr.material.color = original;
     }
+
+
+    private void TriggerSummon()
+    {
+        if (!BoardManager.Instance || !CurrentSlot) return;
+
+        bool isPlayer = BoardManager.Instance.IsPlayerSlot(CurrentSlot);
+
+
+        var slots = isPlayer ? BoardManager.Instance.GetPlayerSlots() : BoardManager.Instance.GetEnemySlots();
+        int slotIndex = -1;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == CurrentSlot) { slotIndex = i; break; }
+        }
+
+        if (slotIndex >= 0)
+        {
+            BoardManager.Instance.SummonCardInSlot(Data.summonOnDeathData, slotIndex, isPlayer);
+        }
+    }
+
+
+    public void OnBoardTurnStart()
+    {
+        if (IsInHand || CurrentSlot == null || Data.property != CardProperty.GrowOlder || Data.summonOnDeathData == null) return;
+
+        turnsOnBoard++;
+        if (turnsOnBoard >= Data.turnsToGrow)
+        {
+            Evolve();
+        }
+    }
+
+
+    private void Evolve()
+    {
+        if (Data.summonOnDeathData == null) return;
+
+
+        CardsDataSO previousForm = Data;
+        Data = Data.summonOnDeathData;
+        CurrentHP = Data.cardHp;
+
+        if (_mf && Data.cardMesh) _mf.sharedMesh = Data.cardMesh;
+        if (_mr && Data.cardMaterial) _mr.sharedMaterial = Data.cardMaterial;
+
+
+        RefreshStatsUI();
+
+
+        SpawnEffect(Data.abilityEffectPrefab);
+        PlaySound(Data.abilitySound);
+
+        Debug.Log($"[Evolve] {previousForm.cardName} -> {Data.cardName}");
+
+
+
+    }
+
 }

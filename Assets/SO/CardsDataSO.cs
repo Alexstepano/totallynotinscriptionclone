@@ -8,6 +8,13 @@ public class CardsDataSO : ScriptableObject
     public int cardAttack;
     public int cardHp;
 
+    [Header("Properties")]
+    public CardProperty property = CardProperty.None;
+
+    public CardsDataSO summonOnDeathData;
+
+    public int turnsToGrow = 1;
+
 
 
     [Header("Visual part")]
@@ -28,4 +35,14 @@ public class CardsDataSO : ScriptableObject
     public AudioClip abilitySound;
     public AudioClip damageSound;
 
+}
+public enum CardProperty
+{
+    None,
+    Lifesteal,  // Лечит владельца при ударе - не существо
+    Venom,
+    Taunt,       // Заставляет атаковать себя
+    SummonOnDeath,
+
+    GrowOlder
 }

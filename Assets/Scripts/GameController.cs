@@ -17,6 +17,9 @@ public class GameController : MonoBehaviour
 
     [Header("State")]
     public bool isPlayerTurn = true;
+    [Header("Health")]
+    public int playerHealth = 10;
+    public int enemyHealth = 10;
 
     private void Awake()
     {
@@ -59,41 +62,84 @@ public class GameController : MonoBehaviour
 
     private IEnumerator ResolveCombatRoutine()
     {
+        Debug.Log("[Combat] Resolving...");
         yield return new WaitForSeconds(0.5f);
-
-        if (BoardManager.Instance == null) { Debug.LogError("[Game] BoardManager missing!"); yield break; }
 
         var pSlots = BoardManager.Instance.GetPlayerSlots();
         var eSlots = BoardManager.Instance.GetEnemySlots();
 
-        if (pSlots == null || eSlots == null) yield break;
-
-        int maxSlots = Mathf.Min(pSlots.Count, eSlots.Count);
-
-        for (int i = 0; i < maxSlots; i++)
+        //   1: Игрок атакует
+        for (int i = 0; i < pSlots.Count; i++)
         {
-            var pCard = pSlots[i]?.currentCard;
-            var eCard = eSlots[i]?.currentCard;
-
-            if (pCard != null && eCard != null)
-            {
-                eCard.TakeDamage(pCard.Data.cardAttack);
-                pCard.TakeDamage(eCard.Data.cardAttack);
-            }
-            else if (pCard != null)
-            {
-                Debug.Log($"[Combat] {pCard.Data.cardName} hits Enemy directly!");
-            }
+            var slot = pSlots[i];
+            if (slot.currentCard == null) continue;
+            ProcessAttack(slot.currentCard, eSlots, true, i);
         }
 
+        yield return new WaitForSeconds(0.5f);
+
+        //2: Враг атакует
+        for (int i = 0; i < eSlots.Count; i++)
+        {
+            var slot = eSlots[i];
+            if (slot.currentCard == null) continue;
+            ProcessAttack(slot.currentCard, pSlots, false, i);
+        }
+
+        CheckWinCondition();
         yield return new WaitForSeconds(0.8f);
         StartCoroutine(EnemyTurnRoutine());
     }
+
+
+
+
+    private void ProcessAttack(CardController attacker, IReadOnlyList<CardSlot> defenderSlots, bool isPlayerAttacking, int attackerSlotIndex)
+    {
+        CardSlot targetSlot = CardPropertySystem.FindTarget(attackerSlotIndex, defenderSlots);
+        int baseDmg = attacker.Data.cardAttack;
+        int finalDmg;
+
+
+        if (targetSlot != null)
+        {
+            finalDmg = CardPropertySystem.CalculateDamage(attacker, baseDmg, false);
+            Debug.Log($"[Combat] {attacker.Data.cardName} -> {targetSlot.currentCard.Data.cardName} ({finalDmg} dmg)");
+            targetSlot.currentCard.TakeDamage(finalDmg);
+
+        }
+        else
+        {
+
+            finalDmg = CardPropertySystem.CalculateDamage(attacker, baseDmg, true);
+            if (isPlayerAttacking) enemyHealth -= finalDmg;
+            else playerHealth -= finalDmg;
+            Debug.Log($"[Combat] {attacker.Data.cardName} hits base for {finalDmg}");
+        }
+        int heal = CardPropertySystem.CalculateLifesteal(attacker, finalDmg);
+        // Применение лечения
+        if (heal > 0)
+        {
+            if (isPlayerAttacking) playerHealth += heal;
+            else enemyHealth += heal;
+            Debug.Log($"[Lifesteal] +{heal} HP");
+        }
+    }
+
+
+    private void CheckWinCondition()
+    {
+        if (enemyHealth <= 0) { Debug.Log("VICTORY!"); Time.timeScale = 0; }
+        else if (playerHealth <= 0) { Debug.Log("DEFEAT!"); Time.timeScale = 0; }
+    }
+
 
     private IEnumerator EnemyTurnRoutine()
     {
         yield return new WaitForSeconds(1f);
         Debug.Log("[Game] Enemy turn started.");
+
+        CheckBoardEvolution(false);
 
 
         if (HandController.Instance == null || HandController.Instance.cardPrefab == null)
@@ -157,7 +203,23 @@ public class GameController : MonoBehaviour
     {
         playerEnergy = maxEnergy;
         isPlayerTurn = true;
+        CheckBoardEvolution(true);
         DrawPlayerCard();
         Debug.Log("[Game] === PLAYER TURN ===");
+    }
+
+
+    private void CheckBoardEvolution(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            foreach (var slot in BoardManager.Instance.GetPlayerSlots())
+                slot.currentCard?.OnBoardTurnStart();
+        }
+        else
+        {
+            foreach (var slot in BoardManager.Instance.GetEnemySlots())
+                slot.currentCard?.OnBoardTurnStart();
+        }
     }
 }

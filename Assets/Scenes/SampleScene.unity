@@ -3956,20 +3956,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameController
   playerDeck:
-  - {fileID: 11400000, guid: 9f904ed0f547a6c48b69991a0f9e3fbf, type: 2}
+  - {fileID: 11400000, guid: d5aed1db579b633498917e5c20b235f3, type: 2}
+  - {fileID: 11400000, guid: d5aed1db579b633498917e5c20b235f3, type: 2}
+  - {fileID: 11400000, guid: d83fc5889aed7c9468bc97bc9d3c387f, type: 2}
   - {fileID: 11400000, guid: 0be5ea5d105a3d645a434275b1082e66, type: 2}
-  - {fileID: 11400000, guid: 81f85b9c80160874fa6a0ce913ab3b63, type: 2}
-  - {fileID: 11400000, guid: 0be5ea5d105a3d645a434275b1082e66, type: 2}
   - {fileID: 11400000, guid: 9f904ed0f547a6c48b69991a0f9e3fbf, type: 2}
+  - {fileID: 11400000, guid: d83fc5889aed7c9468bc97bc9d3c387f, type: 2}
   enemyDeck:
   - {fileID: 11400000, guid: 0be5ea5d105a3d645a434275b1082e66, type: 2}
-  - {fileID: 11400000, guid: 9f904ed0f547a6c48b69991a0f9e3fbf, type: 2}
-  - {fileID: 11400000, guid: 9f904ed0f547a6c48b69991a0f9e3fbf, type: 2}
-  - {fileID: 11400000, guid: 9f904ed0f547a6c48b69991a0f9e3fbf, type: 2}
+  - {fileID: 11400000, guid: 81f85b9c80160874fa6a0ce913ab3b63, type: 2}
+  - {fileID: 11400000, guid: d83fc5889aed7c9468bc97bc9d3c387f, type: 2}
+  - {fileID: 11400000, guid: 81f85b9c80160874fa6a0ce913ab3b63, type: 2}
+  - {fileID: 11400000, guid: d5aed1db579b633498917e5c20b235f3, type: 2}
+  - {fileID: 11400000, guid: d83fc5889aed7c9468bc97bc9d3c387f, type: 2}
   maxHandSize: 5
   playerEnergy: 3
   maxEnergy: 3
   isPlayerTurn: 1
+  playerHealth: 10
+  enemyHealth: 10
 --- !u!1 &1900244015
 GameObject:
   m_ObjectHideFlags: 0
