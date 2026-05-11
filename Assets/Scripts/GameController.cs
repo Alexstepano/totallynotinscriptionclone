@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour
         isPlayerTurn = true;
         for (int i = 0; i < 3; i++) DrawPlayerCard();
         Debug.Log("[Game] Game Started.");
+        RefreshUI();
     }
 
     public void DrawPlayerCard()
@@ -50,7 +51,11 @@ public class GameController : MonoBehaviour
     }
 
     public bool CanAfford(int cost) => playerEnergy >= cost;
-    public void SpendEnergy(int amount) => playerEnergy = Mathf.Max(0, playerEnergy - amount);
+    public void SpendEnergy(int amount)
+    {
+        playerEnergy = Mathf.Max(0, playerEnergy - amount);
+        RefreshUI();
+    }
 
     public void EndPlayerTurn()
     {
@@ -87,6 +92,7 @@ public class GameController : MonoBehaviour
         }
 
         CheckWinCondition();
+        RefreshUI();
         yield return new WaitForSeconds(0.8f);
         StartCoroutine(EnemyTurnRoutine());
     }
@@ -206,6 +212,7 @@ public class GameController : MonoBehaviour
         CheckBoardEvolution(true);
         DrawPlayerCard();
         Debug.Log("[Game] === PLAYER TURN ===");
+        RefreshUI();
     }
 
 
@@ -222,4 +229,11 @@ public class GameController : MonoBehaviour
                 slot.currentCard?.OnBoardTurnStart();
         }
     }
+
+
+    private void RefreshUI()
+    {
+        GameUI.Instance?.UpdateUI();
+    }
+
 }
